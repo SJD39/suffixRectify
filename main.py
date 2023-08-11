@@ -20,8 +20,16 @@ def run():
 
     for filePath in filePaths:
         kind = filetype.guess(filePath)
+        if kind is None:
+            continue
+
         suffix = os.path.splitext(filePath)[1]
+        
         if suffix != "." + kind.extension:
+            # 补丁：zip文件后缀带z都算正确格式
+            if kind.extension == 'zip' and 'z' in suffix:
+                continue
+
             os.rename(filePath, os.path.splitext(filePath)[0] + "." + kind.extension)
 
     window.messagebox.showinfo("提示", "修复完成！")
